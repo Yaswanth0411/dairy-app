@@ -3,6 +3,7 @@ import { supabase } from './supabaseClient'
 import Auth from './Auth'
 import Diary from './Diary'
 import Stories from './Stories'
+import Calendar from './Calendar'
 
 function App() {
   const [session, setSession] = useState(null)
@@ -21,6 +22,12 @@ function App() {
   }, [])
 
   if (!session) return <Auth />
+
+  const tabs = [
+    { id: 'diary', label: '📔 Diary' },
+    { id: 'calendar', label: '📅 Calendar' },
+    { id: 'stories', label: '✍️ Stories' },
+  ]
 
   return (
     <div style={{ backgroundColor: '#f5f0e8', minHeight: '100vh', padding: '1rem' }}>
@@ -47,38 +54,27 @@ function App() {
         display: 'flex', gap: '0.5rem',
         maxWidth: '700px', margin: '0 auto 1.5rem auto'
       }}>
-        <button
-          onClick={() => setActiveTab('diary')}
-          style={{
-            flex: 1, padding: '0.75rem', borderRadius: '8px', border: 'none',
-            backgroundColor: activeTab === 'diary' ? '#5c3d2e' : 'white',
-            color: activeTab === 'diary' ? 'white' : '#5c3d2e',
-            fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-          }}
-        >
-          📔 Diary
-        </button>
-        <button
-          onClick={() => setActiveTab('stories')}
-          style={{
-            flex: 1, padding: '0.75rem', borderRadius: '8px', border: 'none',
-            backgroundColor: activeTab === 'stories' ? '#5c3d2e' : 'white',
-            color: activeTab === 'stories' ? 'white' : '#5c3d2e',
-            fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-          }}
-        >
-          ✍️ Stories
-        </button>
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            style={{
+              flex: 1, padding: '0.75rem', borderRadius: '8px', border: 'none',
+              backgroundColor: activeTab === tab.id ? '#5c3d2e' : 'white',
+              color: activeTab === tab.id ? 'white' : '#5c3d2e',
+              fontWeight: 'bold', cursor: 'pointer', fontSize: '0.95rem',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Content */}
-      {activeTab === 'diary' ? (
-        <Diary user={session.user} />
-      ) : (
-        <Stories user={session.user} />
-      )}
+      {activeTab === 'diary' && <Diary user={session.user} />}
+      {activeTab === 'calendar' && <Calendar user={session.user} />}
+      {activeTab === 'stories' && <Stories user={session.user} />}
 
     </div>
   )
